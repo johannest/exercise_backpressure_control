@@ -21,8 +21,9 @@ public class DataProcessingController {
     }
 
     @PostMapping("/process")
-    public ResponseEntity<Void> process(@RequestBody Messages.ProcessingRequest request) {
+    public ResponseEntity<String> process(@RequestBody Messages.ProcessingRequest request) {
+        System.out.println(dataProcessor.getCount());
         dataProcessor.enqueue(request);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.accepted().body(String.valueOf(dataProcessor.getCount()));
     }
 }

@@ -25,7 +25,19 @@ public class ProcessingWorker {
             var message = requestGenerator.next();
             try {
                 sent++;
-                client.sendToServer(message);
+                Integer response = Integer.parseInt(client.sendToServer(message));
+                if (response > 1) {
+                    System.out.println("Sleeping 200ms");
+                    Thread.sleep(200);
+                }
+                if (response > 4) {
+                    System.out.println("Sleeping 2s");
+                    Thread.sleep(2000);
+                }
+                if (response>8) {
+                    System.out.println("Sleeping 5s");
+                    Thread.sleep(5000);
+                }
             } catch (Exception ex) {
                 LOGGER.error("Error sending request {}: {}", message.getUuid(), ex.getMessage());
                 errors++;

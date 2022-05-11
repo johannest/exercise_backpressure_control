@@ -23,7 +23,9 @@ public class DataProcessor {
      * to the executor service.
      */
     private final ExecutorService threadPool = Executors.newFixedThreadPool(10);
+
     private final AtomicLong processed = new AtomicLong();
+    private final AtomicLong inqueue = new AtomicLong();
 
     @PreDestroy
     void destroy() {
@@ -32,7 +34,15 @@ public class DataProcessor {
     }
 
     public void enqueue(Messages.ProcessingRequest request) {
-        threadPool.submit(() -> doProcess(request));
+        inqueue.incrementAndGet();
+        threadPool.submit(() -> {
+            doProcess(request);
+            inqueue.decrementAndGet();
+        });
+    }
+    
+    public int getCount() {
+        return (int)inqueue.get();
     }
 
     /**
